@@ -4,7 +4,7 @@
  * @return {number}
  */
  var coinChange = function (coins, amount) {
-    let INF = Number.MAX_SAFE_INTEGER
+    let INF = Number.MAX_SAFE_INTEGER;
     let dp = new Array(amount + 1).fill(INF)
     dp[0] = 0
     for (let i = 0; i < amount; i++) {
