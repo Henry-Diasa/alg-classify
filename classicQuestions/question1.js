@@ -1,9 +1,33 @@
 /**
  * 题目一
- * 给定一个有序数组arr，从左到右依次表示X轴上从左往右点的位置，给定一个正整数K，返回如果有一根
- * 长度为K的绳子，最多能盖住几个点
+ * 给定一个有序数组arr，从左到右依次表示X轴上从左往右点的位置，给定一个正整数L，返回如果有一根
+ * 长度为L的绳子，最多能盖住几个点
  * 绳子的边缘点碰到X轴上的点，也算盖住
  */
+function maxPoint(arr, L) {
+  let res = 1;
+  for (let i = 0; i < arr.length; i++) {
+    let nearest = nearestIndex(arr, i, arr[i] - L);
+    res = Math.max(res, i - nearest + 1);
+  }
+  return res;
+}
+
+// 寻找大于等于value的且离其最近的索引
+function nearestIndex(arr, R, value) {
+  let L = 0;
+  let index = R;
+  while (L <= R) {
+    let mid = L + (R - L) / 2;
+    if (arr[mid] >= value) {
+      index = mid;
+      R = mid - 1;
+    } else {
+      L = mid + 1;
+    }
+  }
+  return index;
+}
 
 /**
  * 题目二
