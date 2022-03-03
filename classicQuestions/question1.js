@@ -5,6 +5,9 @@
  * 绳子的边缘点碰到X轴上的点，也算盖住
  */
 function maxPoint(arr, L) {
+  /**
+   * 每次 遍历一个点 以当前点当做绳子的右端向左拉  然后找到大于绳子末端最靠近的那个点的索引
+   */
   let res = 1;
   for (let i = 0; i < arr.length; i++) {
     let nearest = nearestIndex(arr, i, arr[i] - L);
@@ -40,6 +43,34 @@ function nearestIndex(arr, R, value) {
  * 问题1： 怎么判断一个括号字符串有效
  * 问题2：如果一个括号字符串无效，返回至少填几个字符能让其整体有效
  */
+function valid(s) {
+  let count = 0;
+  for (let i = 0; i < s.length; i++) {
+    count += s[i] == "(" ? 1 : -1;
+    if (count < 0) {
+      return false;
+    }
+  }
+  return count == 0;
+}
+
+function needParentheses(s) {
+  let count = 0;
+  let need = 0;
+
+  for (let i = 0; i < s.length; s++) {
+    if (s[i] == "(") {
+      count++;
+    } else {
+      if (count == 0) {
+        need++; // 右括号且没有左括号匹配
+      } else {
+        count--;
+      }
+    }
+  }
+  return count + need;
+}
 
 /**
  *
@@ -48,9 +79,26 @@ function nearestIndex(arr, R, value) {
  * 1） 任何一个左括号都能找到和其正确配对的右括号
  * 2）任何一个右括号都能找到和其正确配对的左括号
  *
- * 返回一个括号字符串中，最长的括号有效子串的长度
+ * 问题1：返回一个括号字符串中，有效匹配的深度 (())()  => 2
+ * 问题2：返回一个括号字符串中，最长的括号有效子串的长度  (())() ((   =>  6
  */
+function deep(s) {
+  if (!valid(s)) {
+    return 0;
+  }
 
+  let count = 0;
+  let max = 0;
+
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] == "(") {
+      max = Math.max(max, ++count);
+    } else {
+      count--;
+    }
+  }
+  return max;
+}
 /**
  * 题目四
  *
