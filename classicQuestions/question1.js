@@ -99,6 +99,27 @@ function deep(s) {
   }
   return max;
 }
+
+function maxLength(s) {
+  if (s == null || s.length() < 2) {
+    return 0;
+  }
+  let dp = new Array(s.length).fill(0);
+  let pre = 0;
+  let ans = 0;
+  // dp[0] = 0; dp[i] 代表以i位置为 ）的配对的长度
+  for (let i = 1; i < s.length; i++) {
+    if (s[i] == ")") {
+      pre = i - dp[i - 1] - 1; // 与s[i]配对的左括号的位置 pre
+      if (pre >= 0 && str[pre] == "(") {
+        dp[i] = dp[i - 1] + 2 + (pre > 0 ? dp[pre - 1] : 0);
+      }
+    }
+    ans = Math.max(ans, dp[i]);
+  }
+  return ans;
+}
+
 /**
  * 题目四
  *
@@ -109,6 +130,31 @@ function deep(s) {
  * 如样例所示 s = RGRGR 我们涂染之后变成 RRRGG 满足要求了，涂染的个数为2，没有比这个更好的方案
  */
 
+/**
+ *
+ * 用分割线从左到右分割  计算左侧的G + 右侧的R  就是要计算的最少涂染的块
+ */
+function minPaint(s) {
+  if (s == null || s.length() < 2) {
+    return 0;
+  }
+  let N = s.length;
+  let rAll = 0;
+  for (let i = 0; i < N; i++) {
+    rAll += str[i] == "R" ? 1 : 0;
+  }
+  let ans = rAll; // 如果数组所有的范围，都是右侧范围，都变成G
+  let left = 0;
+  for (let i = 0; i < N - 1; i++) {
+    // 0..i 左侧 n-1..N-1
+    left += str[i] == "G" ? 1 : 0;
+    rAll -= str[i] == "R" ? 1 : 0;
+    ans = Math.min(ans, left + rAll);
+  }
+  // 0...N-1 左全部 右无
+  ans = Math.min(ans, left + (str[N - 1] == "G" ? 1 : 0));
+  return ans;
+}
 /**
  * 题目五
  *
