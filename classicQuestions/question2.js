@@ -261,6 +261,7 @@ function water(arr) {
  * 2）返回累加和为aim的，所有不同三元组
  */
 
+// 1)
 function printUniquePair(arr, k) {
   if (!arr || arr.length < 2) {
     return;
@@ -283,4 +284,79 @@ function printUniquePair(arr, k) {
       right--;
     }
   }
+}
+
+// 2)
+
+function printUniqueTriad(arr, k) {
+  if (!arr || arr.length < 3) {
+    return;
+  }
+
+  for (let i = 0; i < arr.length - 2; i++) {
+    if (i == 0 || arr[i] !== arr[i - 1]) {
+      printRest(arr, i, i + 1, arr.length - 1, k - arr[i]);
+    }
+  }
+}
+
+function printRest(arr, f, l, r, k) {
+  while (l < r) {
+    if (arr[l] + arr[r] < k) {
+      l++;
+    } else if (arr[l] + arr[r] > k) {
+      r--;
+    } else {
+      if (l == f + 1 || arr[l - 1] != arr[l]) {
+        System.out.println(arr[f] + "," + arr[l] + "," + arr[r]);
+      }
+      l++;
+      r--;
+    }
+  }
+}
+
+/**
+ * 题目7
+ *
+ * 长度为N的数组arr， 一定可以组成N^2个数值对
+ * 例如 arr=[3,1,2]
+ *
+ * 数值对有（3,3）（3,1）（3,2）（1,3）（1,1）（1,2）（2,3）（2,1）（2,2）
+ *
+ * 也就是任意两个数都有数值对，而且自己和自己也算数值对。
+ * 数值对怎么排序？规定：第一维数据从小到大，第一维数据一样的，第二维数组也从小到大
+ * ，所以上面的数值对排序的结果为
+ *
+ * （1,2）（1,2）（1,3）（2,1）（2,2）（2,3）（3,1）（3,2）（3,3）
+ *
+ * 给定一个数组arr， 和整数K，返回第K小的数值对
+ *
+ * // 在无序数组arr中，找到，如果排序的话，arr[index]的数是什么？
+ * https://hub.fastgit.org/algorithmzuo/trainingcamp003/blob/master/src/class02/Code07_KthMinPair.java#L94
+ */
+
+function kthMinPair2(arr, k) {
+  let N = arr.length;
+  if (k > N * N) {
+    return null;
+  }
+
+  arr.sort((a, b) => a - b);
+
+  // 第K小的数值对，第一维数字，是什么 是arr中
+  let firstNum = arr[(k - 1) / N];
+  let lessFristNumSize = 0; // 数出比fristNum小的数有几个
+  let fristNumSize = 0; // 数出==fristNum的数有几个
+
+  for (let i = 0; i < N && arr[i] <= firstNum; i++) {
+    if (arr[i] < firstNum) {
+      lessFristNumSize++;
+    } else {
+      fristNumSize++;
+    }
+  }
+  let rest = k - lessFristNumSize * N;
+
+  return [firstNum, arr[(rest - 1) / fristNumSize]];
 }
