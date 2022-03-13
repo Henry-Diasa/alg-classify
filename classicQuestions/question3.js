@@ -97,3 +97,112 @@ function way2(arr, w) {
 
   return dp[0][w];
 }
+
+/**
+ * 题目3
+ *
+ * 给定一个二维数组matrix，其中每个数都是正数，要求从左上到右下。每一步只能向右或者向下，沿途经过的数字要累加起来
+ *
+ * 最后请返回最小的路径和
+ *
+ * 动态规划的空间压缩技巧
+ */
+
+function minPathSum(m) {
+  if (!m || m.length == 0 || m[0] == null || m[0].length == 0) {
+    return 0;
+  }
+
+  let row = m.length;
+  let col = m[0].length;
+
+  let dp = new Array(row).fill(new Array(col));
+
+  dp[0][0] = m[0][0];
+  // 第一列
+  for (let i = 1; i < row; i++) {
+    dp[i][0] = dp[i - 1][0] + m[i][0];
+  }
+
+  // 第一行
+  for (let j = 1; j < col; j++) {
+    dp[0][j] = dp[0][j - 1] + m[0][j];
+  }
+
+  // 任意一项 依赖左侧和上侧 小值
+  for (let i = 1; i < row; i++) {
+    for (let j = 1; j < col; j++) {
+      dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + m[i][j];
+    }
+  }
+
+  return dp[row - 1][col - 1];
+}
+/**
+ * 题目4
+ *
+ * 请注意区分子串（连续）和子序列（可以不连续）的不同， 给定两个字符串str1 和 str2
+ * 求两个字符的最长公共子序列
+ *
+ * 动态规划的空间压缩技巧
+ */
+
+function lcs(s1, s2) {
+  const N = s1.length;
+  const M = s2.length;
+
+  return process(s1, s2, N - 1, M - 1);
+}
+
+function process(str1, str2, i1, i2) {
+  if (i1 == 0 && i2 == 0) {
+    return str1[i1] == str2[i2] ? 1 : 0;
+  }
+
+  // i1 和 i2 不同时为0
+  if (i1 == 0) {
+    // str1[0..0] str2[0...i2 - 1]
+    return str1[i1] == str2[i2] || process(str1, str2, i1, i2 - 1) == 1 ? 1 : 0;
+  }
+
+  if (i2 == 0) {
+    return str1[i1] == str2[i2] || process(str1, str2, i1 - 1, i2) == 1 ? 1 : 0;
+  }
+
+  // i1 和 i2 都不是0
+  // 最长公共子序列结尾，不是以str1[i1]与str2[i2]结尾的
+  let p1 = process(str1, str2, i1 - 1, i2 - 1);
+  let p2 = process(str1, str2, i1, i2 - 1);
+  let p3 = process(str1, str2, i1 - 1, i2);
+  let p4 = 0;
+  if (str1[i1] == str2[i2]) {
+    p4 = p1 + 1;
+  }
+  return Math.max(Math.max(p1, p2), Math.max(p3, p4));
+}
+
+function dp(s1, s2) {
+  let N = s1.length;
+  let M = s2.length;
+
+  let dp = new Array(N).fill(new Array(M));
+
+  dp[0][0] = s1[0] == s2[0] ? 1 : 0;
+  for (let j = 1; j < M; j++) {
+    // 第一行
+    dp[0][j] = s1[0] == s2[j] ? 1 : dp[0][j - 1];
+  }
+  for (let i = 1; i < N; i++) {
+    // 第一列
+    dp[i][0] = s1[i] == s2[0] ? 1 : dp[i - 1][0];
+  }
+  for (let i = 1; i < N; i++) {
+    for (let j = 1; j < M; j++) {
+      dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      if (s1[i] == s2[j]) {
+        dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + 1);
+      }
+    }
+  }
+  return dp[N - 1][M - 1];
+}
