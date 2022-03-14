@@ -206,3 +206,99 @@ function dp(s1, s2) {
   }
   return dp[N - 1][M - 1];
 }
+
+/**
+ * 题目5
+ *
+ * 给定两个字符串str1和str2， 求两个字符串的最长公共子串
+ */
+function lcst1(str1, str2) {
+  if (!str1 || !str2) {
+    return "";
+  }
+
+  const dp = getDp(str1, str2);
+
+  let end = 0;
+  let max = 0;
+
+  for (let i = 0; i < str1.length; i++) {
+    for (let j = 0; j < str2.length; j++) {
+      if (dp[i][j] > max) {
+        end = i;
+        max = dp[i][j];
+      }
+    }
+  }
+
+  return str1.substring(end - max + 1, end + 1);
+}
+
+function getDp(str1, str2) {
+  let dp = new Array(str1.length).fill(new Array(str2.length).fill(0));
+  // 第一列  如果字符串相等  这个位置置为1
+  for (let i = 0; i < str1.length; i++) {
+    if (str1[i] == str2[0]) {
+      dp[i][0] = 1;
+    }
+  }
+  // 第一行
+  for (let j = 1; j < str2.length; j++) {
+    if (str1[0] == str2[j]) {
+      dp[0][j] = 1;
+    }
+  }
+  // 任意位置 当前位置的值 = dp[行 - 1][列 - 1]的位置的值 + 1
+  for (let i = 1; i < str1.length; i++) {
+    for (let j = 1; j < str2.length; j++) {
+      if (str1[i] == str2[j]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      }
+    }
+  }
+  return dp;
+}
+
+// 极致路径压缩 从右上角开始 在按照斜对角线往下方延展
+function lcst2(s1, s2) {
+  if (!s1 || !s2) {
+    return "";
+  }
+  let row = 0; // 出发点的行号
+  let col = s2.length - 1; // 出发点的列号
+  let max = 0;
+  let end = 0;
+  while (row < s1.length) {
+    let i = row;
+    let j = col;
+    let len = 0;
+    // 向右下方移动的这一轮
+    while (i < s1.length && j < s2.length) {
+      if (s1[i] != s2[j]) {
+        len = 0;
+      } else {
+        len++;
+      }
+      // len
+      if (len > max) {
+        end = i;
+        max = len;
+      }
+      i++;
+      j++;
+    }
+    if (col > 0) {
+      col--;
+    } else {
+      row++;
+    }
+  }
+  return s1.substring(end - max + 1, end + 1);
+}
+/**
+ * 题目6 （留大的抛弃小的 => 小堆）
+ *
+ * 给定一个由字符串组成的数组strs， 给定一个正数K， 返回词频最大的前K个字符串，假设结果是唯一的
+ *
+ * https://github.com/algorithmzuo/trainingcamp003/blob/master/src/class03/Code06_TopKTimes.java
+ */
