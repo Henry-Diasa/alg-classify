@@ -302,3 +302,20 @@ function lcst2(s1, s2) {
  *
  * https://github.com/algorithmzuo/trainingcamp003/blob/master/src/class03/Code06_TopKTimes.java
  */
+
+/**
+ * 题目7
+ *
+ *请实现如下结构
+  TopRecord {
+    public TopRecord(int k); 构造时事先指定好k的大小，构造后就固定不变了
+    public void add(String str); 向该结构中加入一个字符串，可以重复加入
+    public List<String> top(); 返回之前加入的所有字符串中，词频最大的k个
+  }=
+
+  要求
+  add方法， 复杂度O(logk)
+  top方法， 复杂度O(K)
+
+  https://hub.fastgit.org/algorithmzuo/trainingcamp003/blob/master/src/class03/Code07_TopKTimesRealTime.java
+ */
