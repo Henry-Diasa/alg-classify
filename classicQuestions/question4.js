@@ -27,6 +27,46 @@
  * 给定一个搜索二叉树的头节点head， 请转化成一条有序的双向链表，并返回链表的头节点
  */
 
+function convert(head) {
+  if (head == null) {
+    return null;
+  }
+  return process(head).start;
+}
+
+// 整棵树，串成双向链表，返回头、尾
+function Info(start, end) {
+  this.start = start;
+  this.end = end;
+}
+
+// 以x为头的整棵搜索二叉树，请全部以有序双向链表的方式，连好
+// 并且返回，整个有序双向链表的头节点和尾节点
+
+function process(X) {
+  if (X == null) {
+    return new Info(null, null);
+  }
+
+  let leftInfo = process(X.left);
+  let rightInfo = process(X.right);
+
+  if (leftInfo.end != null) {
+    leftInfo.end.right = X;
+  }
+  X.left = leftInfo.end;
+  X.right = rightInfo.start;
+  if (rightInfo.start != null) {
+    rightInfo.start.left = X;
+  }
+
+  return new Info(
+    // 整棵树的头，
+    leftInfo.start != null ? leftInfo.start : X,
+    // 整棵树的尾，
+    rightInfo.start != null ? rightInfo.end : X
+  );
+}
 /**
  * 题目3
  *
@@ -109,3 +149,70 @@ function process(pre, L1, R1, ior, L2, R2, pos, L3, R3, inMap) {
  * 长度从小到大排序 长度相同 宽度从大到小排序 然后取出宽度求最长递归子序列
  *
  */
+
+/**
+ * 题目6
+ *
+ * 给定一个数组arr， 返回子数组的最大累加和
+ *
+ * 数组从头开始遍历， 累加和 < 0的时候, cur重新置为0 继续累加
+ *
+ * 假设 [i...j] 是最大的累加和子数组， 可以得到以下两个结论
+ *
+ * 1、[i...k...j] 肯定不小于0  否则 [k...j]的累加和将大于 [i...j]
+ * 2、[...i-1] i-1以前的位置累加和 肯定是小于0的， 否则可以一同并入到[i...j] 使长度更长
+ */
+
+function maxSum(arr) {
+  if (!arr || arr.length == 0) {
+    return 0;
+  }
+
+  let max = Number.MIN_VALUE;
+  let cur = 0;
+  for (let i = 0; i < arr.length; i++) {
+    cur += arr[i];
+    max = Math.max(max, cur);
+    // 小于0的时候证明前面累加的不会计入到最长子数组中
+    cur = cur < 0 ? 0 : cur;
+  }
+  return max;
+}
+
+/**
+ * 题目7
+ *
+ * 给定一个整型矩阵， 返回子矩阵的最大累加和
+ *
+ * 压缩矩阵
+ * 0~0 0~1 0~2 0~3
+ * 1~1 1~2 1~3
+ *
+ * 遍历所有情况
+ *
+ * 每行相应列加和 最后形成一维数组 求最大累加和
+ */
+
+function maxSum(m) {
+  if (!m || m.length == 0 || m[0].length == 0) {
+    return 0;
+  }
+  let max = Number.MIN_VALUE;
+  let cur = 0;
+  let s = null;
+  for (let i = 0; i != m.length; i++) {
+    // 开始的行号i
+    s = new Array(m[0].length).fill(0);
+    for (let j = i; j != m.length; j++) {
+      // 结束的行号j，i~j行是我讨论的范围
+      cur = 0;
+      for (let k = 0; k != s.length; k++) {
+        s[k] += m[j][k];
+        cur += s[k];
+        max = Math.max(max, cur);
+        cur = cur < 0 ? 0 : cur;
+      }
+    }
+  }
+  return max;
+}
