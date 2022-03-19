@@ -100,3 +100,9 @@ function mostLeftLevel(node, level) {
   }
   return level - 1;
 }
+
+/**
+ * 题目4
+ *
+ * LRU内存替换算法
+ */
